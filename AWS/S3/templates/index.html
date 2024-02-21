@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+/* Form container styles */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styles */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Label styles */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Input styles */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
+    width: calc(100% - 12px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+
+/* Button styles */
+button[type="button"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+/* Result styles */
+#result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Courier, monospace;
+    white-space: pre-wrap;
+}
+
+
+</style>
+</head>
+<body>
+    <h1>User Management</h1>
+
+    <h2>Create User</h2>
+    <form id="createUserForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" required><br>
+
+        <label for="membership">Membership:</label>
+        <input type="text" id="membership" required><br>
+
+        <label for="contact">Contact:</label>
+        <input type="text" id="contact" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" required><br>
+
+        <button type="button" onclick="createUser()">Create User</button>
+    </form>
+
+    <h2>Search User</h2>
+    <form id="searchUserForm">
+        <label for="searchName">Name to Search:</label>
+        <input type="text" id="searchName" required><br>
+
+        <button type="button" onclick="searchUser()">Search User</button>
+    </form>
+
+    <h2>Delete User</h2>
+    <form id="deleteUserForm">
+        <label for="deleteName">Name to Delete:</label>
+        <input type="text" id="deleteName" required><br>
+
+        <button type="button" onclick="deleteUser()">Delete User</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        function createUser() {
+            const formData = {
+                name: document.getElementById('name').value,
+                gender: document.getElementById('gender').value,
+                age: document.getElementById('age').value,
+                membership: document.getElementById('membership').value,
+                contact: document.getElementById('contact').value,
+                email: document.getElementById('email').value,
+            };
+
+            fetch('/create-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = data.message;
+            });
+        }
+
+        function searchUser() {
+            const searchName = document.getElementById('searchName').value;
+
+            fetch(`/search-user?name=${searchName}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+            });
+        }
+
+        function deleteUser() {
+            const deleteName = document.getElementById('deleteName').value;
+
+            fetch(`/delete-user?name=${deleteName}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = data.message;
+            });
+        }
+    </script>
+</body>
+</html>
