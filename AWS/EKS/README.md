@@ -7,6 +7,9 @@ Creating an AWS Elastic Kubernetes Cluster and deploying a simple application on
 
 ## Steps to Create EKS Cluster
 
+
+![Screenshot 2024-02-23 004955](https://github.com/ASWINBABUKV/Cloud-Practitioner/assets/137376192/f1a666ea-63f7-4c4b-8966-def9ea1fd78e)
+
 1. Create a VPC for the EKS Cluster using Cloud Formation Template
 - Go to AWS Cloud Formation Service
 - Create a stack
