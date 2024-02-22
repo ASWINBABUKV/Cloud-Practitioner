@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+</head>
+<body>
+    <h1>Employee Details</h1>
+
+    <h2>Register New Employee</h2>
+    <form action="/register" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="age">Age:</label>
+        <input type="text" id="age" name="age"><br><br>
+        <label for="gender">Gender:</label>
+        <input type="text" id="gender" name="gender"><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br><br>
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone"><br><br>
+        <label for="occupation">Occupation:</label>
+        <input type="text" id="occupation" name="occupation"><br><br>
+        <label for="location">Job Location:</label>
+        <input type="text" id="location" name="location"><br><br>
+        <input type="submit" value="Register">
+    </form>
+
+    <h2>Search Employee</h2>
+    <form action="/search" method="post">
+        <label for="search_name">Name:</label>
+        <input type="text" id="search_name" name="search_name">
+        <input type="submit" value="Search">
+    </form>
+
+    <h2>Delete Employee</h2>
+    <form action="/delete" method="post">
+        <label for="delete_name">Name:</label>
+        <input type="text" id="delete_name" name="delete_name">
+        <input type="submit" value="Delete">
+    </form>
+
+    <h2>Display Employees</h2>
+    <form action="/display" method="get">
+        <input type="submit" value="Display">
+    </form>
+</body>
+</html>
+
