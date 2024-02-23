@@ -10,7 +10,7 @@ Creating an AWS Elastic Kubernetes Cluster and deploying a simple application on
 
 ![Screenshot 2024-02-23 004955](https://github.com/ASWINBABUKV/Cloud-Practitioner/assets/137376192/f1a666ea-63f7-4c4b-8966-def9ea1fd78e)
 
-1. Create a VPC for the EKS Cluster using Cloud Formation Template
+1. Create a VPC for the EKS Cluster using the Cloud Formation Template
 - Go to AWS Cloud Formation Service
 - Create a stack
 - Template is ready
@@ -23,7 +23,7 @@ Creating an AWS Elastic Kubernetes Cluster and deploying a simple application on
 - Create Stack
 _VPC stands for virtual private cloud._
 
-2. Create IAM (Identity and Access Management) Role in AWS
+2. Create an IAM (Identity and Access Management) Role in AWS
 - Go to IAM Service
 - Create Role 
 - Entity Type -> AWS service
@@ -36,7 +36,7 @@ _VPC stands for virtual private cloud._
 
 3. By using the VPC and Role, create EKS Cluster (Control Plane)
 - Go to EKS Service
-- Create Cluster with name EKS-Cluster
+- Create a Cluster with name EKS-Cluster
 - Give the role as EKSCLusterRole
 - Use the custom VPC
 - Security group related to VPC should be selected
@@ -69,7 +69,7 @@ _VPC stands for virtual private cloud._
 ```bash
   sudo su -
 ```
-- Install kubectl (Client Machine should perform operations with client Machine)
+- Install kubectl (Client Machine should perform operations with control Plane)
 ```bash
      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 ```
@@ -80,7 +80,7 @@ _VPC stands for virtual private cloud._
 ```bash
      kubectl version --client
 ```
-- Download and configure AWS Command Line Interface (CLI)
+- Download and configure the AWS Command Line Interface (CLI)
 ```bash
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
   unzip awscliv2.zip
@@ -90,7 +90,7 @@ _VPC stands for virtual private cloud._
 ```bash
   aws configure
 ```
-_Go to security credential of root account. Create the access key._
+_Go to security credential of the root account. Create the access key._
 - List the Cluster
 ```bash
   aws eks list-clusters
@@ -100,11 +100,11 @@ _Go to security credential of root account. Create the access key._
 ```bash
   aws eks update-config --name <cluster-name> --region <region-code>
 ```
-- In the cluster we will have kubeconfig file which contains cluster information. Update the kubeconfig file to connect kubectl and Control Plane.
+- In the cluster, we will have kubeconfig file which contains cluster information. Update the kubeconfig file to connect kubectl and Control Plane.
 - Use <cat> Command to see the content inside kubeconfig file
 - Next, add Worker Nodes to the Control Plane. For that 
 
-7. Create IAM Role for the EKS Worker Nodes with below policies
+7. Create an IAM Role for the EKS Worker Nodes with the below policies
 ```bash
   AmazonEKSWorkerNodePolicy
   AmazonEKS_CNI_Policy
@@ -124,5 +124,60 @@ Try commands
   kubectl get pods
 ```
 
-## Sucessfully Created Control Plane and Worker Nodes
+## Successfully Created Control Plane and Worker Nodes (Kubernetes CLuster)
 
+### Deploying the Application
+## Creating a Flask Application with AWS S3 Integration
+
+1. Download the files
+
+    _This is a basic HTML form that takes the input from the user and will store the input in a text file. We can display, search, and delete users._
+
+2. Build the docker image
+
+- docker build -t <image_name>
+
+```bash
+docker build -t text-app
+```
+3. Push the image to the docker hub
+
+- docker tag <image_name> <dockerhub_user_id>/<image_name>
+
+```bash
+docker tag text-app aswin1101/text-app
+```
+4. Check whether the container is running
+
+```bash
+docker ps
+```
+
+5. Run the docker container
+
+```bash
+docker run -d my-image
+docker run -d -p 8080:80 my-image
+
+#-d: Detached mode, which means the container runs in the background.
+#-p 8080:80: Maps port 8080 on the host to port 80 in the container. This allows accessing the containerized application via port 8080 on the host machine.
+
+```
+6. Build the deployment and service files (textapp.yaml)
+```bash
+kubectl apply -f textapp.yaml
+```
+
+7. Check the status of your deployment and service to ensure that your application is running correctly.
+```bash
+kubectl get deployments
+kubectl get pods
+kubectl get services
+kubectl get pods -o wide
+```
+
+8. Copy and paste the DNS of the load balancer
+
+
+
+![Screenshot 2024-02-23 151156](https://github.com/ASWINBABUKV/Cloud-Practitioner/assets/137376192/f06de7cb-cd5d-426b-96f4-67819d86f53f)
