@@ -127,7 +127,7 @@ Try commands
 ## Successfully Created Control Plane and Worker Nodes (Kubernetes CLuster)
 
 ### Deploying the Application
-## Creating a Flask Application with AWS S3 Integration
+
 
 1. Download the files
 
