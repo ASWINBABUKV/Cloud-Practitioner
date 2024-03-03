@@ -11,32 +11,72 @@ Creating an AWS Elastic Kubernetes Cluster and deploying a simple application on
 ![Screenshot 2024-02-23 004955](https://github.com/ASWINBABUKV/Cloud-Practitioner/assets/137376192/f1a666ea-63f7-4c4b-8966-def9ea1fd78e)
 
 1. Create a VPC for the EKS Cluster using the Cloud Formation Template
+
+    _VPC stands for virtual private cloud._ Create a separate VPC for the EKS Cluster. We can use a cloud formation template for creating the VPC. CloudFormation template provides a standardized and automated way to create a VPC suitable for hosting Amazon EKS clusters
+
+
 - Go to AWS Cloud Formation Service
 - Create a stack
-- Template is ready
-- Give the S3 URL
+- Template is ready (since we are using a pre-defined template)
+- Specify the S3 URL
 ```bash
   https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml
 ```
-- Enter Stack Name -> EKSVCCloudFormation
+- Enter Stack Name -> EKSVPCCloudFormation
 - Create Stack
-_VPC stands for virtual private cloud._
 
-2. Create an IAM (Identity and Access Management) Role in AWS
+  Why VPC?
+
+  In the context of Amazon EKS, a VPC is required to provide networking infrastructure for the Kubernetes cluster. It enables communication between EKS control plane components, worker nodes, and other AWS services. The VPC also allows you to configure networking policies, such as pod-to-pod communication.
+
+  The provided CloudFormation template (amazon-eks-vpc-private-subnets.yaml) is a YAML file that defines the resources needed to create a VPC suitable for hosting an Amazon EKS cluster. This template sets up a VPC with private subnets across multiple Availability Zones.
+
+  Parameter section -> It's like how big your VPC should be.
+
+  VpcBlock -> The CIDR range for the VPC, which defines the IP address range for the VPC.
+
+  Resources Section -> This section lists all the things we're going to create in our virtual network.
+  - InternetGateway: An internet gateway attached to the VPC to enable outbound internet access for resources within the VPC.
+  - VPCGatewayAttachment: Attachment of the internet gateway to the VPC.
+  - PublicRouteTable: Route table for public subnets.
+  - PrivateRouteTable01, PrivateRouteTable02: Route tables for private subnets in different Availability Zones.
+  - NatGateway01, NatGateway02: NAT gateways for private subnets in each Availability Zone to enable internet access for resources in private subnets.
+  - PublicSubnet01, PublicSubnet02: Public subnets in different Availability Zones.
+  - PrivateSubnet01, PrivateSubnet02: Private subnets in different Availability Zones.
+
+  Outputs Section -> This section defines the outputs of the CloudFormation stack
+  - SubnetIds: IDs of all subnets created within the VPC.
+  - SecurityGroups: Security group for controlling communication between the EKS control plane and worker nodes.
+  - VpcId: ID of the VPC created by the stack.
+
+  Explanation of what this does?
+
+  - The template creates a VPC with specified CIDR blocks and divides it into public and private subnets across multiple Availability Zones.
+  - Public subnets have internet access through an internet gateway, while private subnets use NAT gateways for outbound internet access.
+  - Route tables are configured to route traffic appropriately between the subnets and the internet.
+  - Security groups are defined to control inbound and outbound traffic between resources within the VPC.
+  - The outputs provide information such as subnet IDs and VPC IDs for use in other CloudFormation templates or scripts.
+
+2. Create an IAM (Identity and Access Management) Role to create an EKS Cluster
+
+The IAM role is needed to tell Amazon EKS who is allowed to do what within the system. It is like a set of rules that ensure only the right people (or services) have access to the right parts of Amazon EKS, keeping everything safe and organized.
+
 - Go to IAM Service
+- Click "Roles" in the left-hand navigation pane
 - Create Role 
 - Entity Type -> AWS service
-- Usecase -> EKS -> EKS Cluster
+- Choose the Use Case -> EKS -> EKS Cluster
+- Attach policies -> Search for and attach the below policy. This policy provides necessary permissions for managing EKS resources such as creating and managing clusters.
 ```bash
   AmazonEKSClusterPolicy
 ```
 - Role Name -> EKSCLusterRole
 - Create Role
 
-3. By using the VPC and Role, create EKS Cluster (Control Plane)
+3. Create EKS Cluster (Control Plane)
 - Go to EKS Service
-- Create a Cluster with name EKS-Cluster
-- Give the role as EKSCLusterRole
+- Create a Cluster with the name EKS-Cluster
+- Give the role as EKSCLusterRole (Select the IAM role that we created earlier for the EKS cluster's control plane)
 - Use the custom VPC
 - Security group related to VPC should be selected
 - Cluster endpoint access -> Public and Private
@@ -45,8 +85,8 @@ _VPC stands for virtual private cloud._
 4. Create Ubuntu EC2 Instance to access the Cluster
 - Go to EC2 Service
 - Launch Instance -> K8s-ClientVM
-- Key-pair - generate new / use old
-- Security group -> existing 
+- Key-pair - generate new / use existing
+- Security group -> generate new
 - Launch Instance
 
 5. Connect EC2 Instance using terminal (Linux)
@@ -64,10 +104,7 @@ _VPC stands for virtual private cloud._
   whoami
   apt update
 ```
-- Switch to the root user
-```bash
-  sudo su -
-```
+
 - Install kubectl (Client Machine should perform operations with control Plane)
 ```bash
      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -132,19 +169,34 @@ Try commands
 
     _This is a basic HTML form that takes the input from the user and will store the input in a text file. We can display, search, and delete users._
 
-2. Build the docker image
+2. Install docker
+   
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo snap install docker
+```
+check whether docker is installed 
+```bash
+docker --version
+OR
+sudo systemctl status docker
+```
+4. Build the docker image
 
-- docker build -t <image_name>
+- docker build -t <image_name> .
 
 ```bash
-docker build -t text-app
+docker build -t text-app .
 ```
 3. Push the image to the docker hub
 
 - docker tag <image_name> <dockerhub_user_id>/<image_name>
+- docker push <dockerhub_user_id>/<image_name>
 
 ```bash
 docker tag text-app aswin1101/text-app
+docker push aswin1101/text-app
 ```
 4. Check whether the container is running
 
