@@ -19,7 +19,6 @@ Creating an AWS Elastic Kubernetes Cluster and deploying a simple application on
   https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml
 ```
 - Enter Stack Name -> EKSVCCloudFormation
-- Create a new key-value pair
 - Create Stack
 _VPC stands for virtual private cloud._
 
