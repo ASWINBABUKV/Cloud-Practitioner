@@ -77,7 +77,10 @@ The IAM role is needed to tell Amazon EKS who is allowed to do what within the s
 - Go to EKS Service
 - Create a Cluster with the name EKS-Cluster
 - Give the role as EKSCLusterRole (Select the IAM role that we created earlier for the EKS cluster's control plane)
-- Use the custom VPC
+- Allow Cluster Administrator Access -> They can perform any action on the cluster, including creating, modifying, and deleting resources
+- Secrets Encryption: Protects sensitive information (secrets) stored in Kubernetes, such as API tokens or passwords. Once you activate secrets encryption, you can't change your mind later. It's a permanent decision. First, the secret itself is encrypted using a unique key. Then, this key is encrypted using a master key managed by AWS KMS (Key Management System). [Leave it as default for demo]
+- Tag-> A tag in AWS is like putting a label on your belongings. Tags help to organize and manage resources in AWS. [leave it default]
+- Use the custom VPC (select the VPC created earlier)
 - Security group related to VPC should be selected
 - Cluster endpoint access -> Public and Private
 - Create the cluster
@@ -85,8 +88,9 @@ The IAM role is needed to tell Amazon EKS who is allowed to do what within the s
 4. Create Ubuntu EC2 Instance to access the Cluster
 - Go to EC2 Service
 - Launch Instance -> K8s-ClientVM
+- Select the OS - Ubuntu
 - Key-pair - generate new / use existing
-- Security group -> generate new
+- Security group -> Generate new
 - Launch Instance
 
 5. Connect EC2 Instance using terminal (Linux)
@@ -126,7 +130,7 @@ The IAM role is needed to tell Amazon EKS who is allowed to do what within the s
 ```bash
   aws configure
 ```
-_Go to security credential of the root account. Create the access key._
+_Go to the security credential of the root account. Create the access key._
 - List the Cluster
 ```bash
   aws eks list-clusters
@@ -134,10 +138,10 @@ _Go to security credential of the root account. Create the access key._
 
 6. Configure the Cluster data (Connect the Control Plane and EC2 Instance)
 ```bash
-  aws eks update-config --name <cluster-name> --region <region-code>
+  aws eks update-kubeconfig --name <cluster-name> --region <region-code>
 ```
 - In the cluster, we will have kubeconfig file which contains cluster information. Update the kubeconfig file to connect kubectl and Control Plane.
-- Use <cat> Command to see the content inside kubeconfig file
+- Use 'cat' Command to see the content inside kubeconfig file
 - Next, add Worker Nodes to the Control Plane. For that 
 
 7. Create an IAM Role for the EKS Worker Nodes with the below policies
