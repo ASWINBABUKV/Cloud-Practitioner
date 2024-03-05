@@ -27,6 +27,8 @@ Creating an AWS Elastic Kubernetes Cluster and deploying a simple application on
 
   Why VPC?
 
+VPC provides a secure and isolated environment for running your EKS cluster, ensuring that your Kubernetes resources are protected and can communicate securely within the cloud. It gives you control over the networking configuration and allows integration with other AWS services, enhancing the flexibility and security of your containerized applications.
+
   In the context of Amazon EKS, a VPC is required to provide networking infrastructure for the Kubernetes cluster. It enables communication between EKS control plane components, worker nodes, and other AWS services. The VPC also allows you to configure networking policies, such as pod-to-pod communication.
 
   The provided CloudFormation template (amazon-eks-vpc-private-subnets.yaml) is a YAML file that defines the resources needed to create a VPC suitable for hosting an Amazon EKS cluster. This template sets up a VPC with private subnets across multiple Availability Zones.
