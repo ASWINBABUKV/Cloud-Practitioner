@@ -20,9 +20,18 @@ Terminologies
 
 1. Task Definition:
 
-- Blueprint written in json format for how to launch the container
+- Blueprint written in JSON format for how to launch the container
 - It defines various parameters required to run containers, such as Docker image, CPU and memory requirements, networking, logging configuration, and other container settings.
 
 2. Task:
 
 - A Task is an instantiation of a Task Definition. It represents a single running instance of the containers defined in the Task Definition.
+
+3. Service:
+
+- An ECS service allows you to define long-running tasks or services that need to be continuously running. A service ensures that a specified number of tasks are always running and can automatically handle tasks that fail or need to be replaced.
+
+4. Load Balancing:
+
+- load balancing is used to distribute traffic across the containers or tasks running within the ECS cluster.
+- When you deploy your containers using ECS, you can attach them to a load balancer to distribute incoming traffic across multiple instances of your application. This ensures that the workload is evenly distributed and that the application remains available and responsive even during high-traffic periods. 
